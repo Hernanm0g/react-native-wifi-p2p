@@ -10,7 +10,9 @@ const CONNECTION_INFO_UPDATED_ACTION = 'CONNECTION_INFO_UPDATED';
 // CONSTS
 const MODULE_NAME = 'WIFI_P2P';
 
-const initialize = () => WiFiP2PManager.init();
+// TODO: Set Random numbers at the end of the string
+const DEFAULT_DEVICE_NAME = "Vidapp_"
+const initialize = () => WiFiP2PManager.init( name = DEFAULT_DEVICE_NAME );
 
 const startDiscoveringPeers = () => new Promise((resolve, reject) => {
     WiFiP2PManager.discoverPeers((reasonCode) => {
@@ -119,7 +121,7 @@ export {
     removeGroup,
     getConnectionInfo,
     getGroupPassphraseInfo,
-    
+
     // experimental
     sendFile,
     receiveFile,
