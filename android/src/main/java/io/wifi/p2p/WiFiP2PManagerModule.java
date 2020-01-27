@@ -10,8 +10,10 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -21,6 +23,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.WritableMap;
 
+import java.lang.reflect.Method;
 import java.io.File;
 
 import static android.os.Looper.getMainLooper;
@@ -41,7 +44,8 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
         super(reactContext);
         this.reactContext = reactContext;
     }
-
+    /** Logging tag, attached to all Android log messages. */
+    private static final String TAG = "WifiDirectSpeaker";
     @Override
     public String getName() {
         return "WiFiP2PManagerModule";
@@ -82,35 +86,6 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
         });
     }
 
-   @ReactMethod
-    public void setWifiDirectUserFriendlyName(String name) {
-      if (manager == null || channel == null) {
-        return;
-      }
-      try {
-        /**
-       * Set the user-friendly name broadcast by the Wifi Direct subsystem to
-       * the given value. This is used to broadcast some value (e.g. our Bluetooth
-       * MAC address) to devices which can scan for us.
-       */
-        // The WifiP2pManager.setDeviceName() method is hidden but accessible through
-        // reflection. The only place I've ever seen it used normally is in the settings
-        // panel of Android, under Wifi -> ... -> Wifi Direct to allow the user to
-        // change the Wifi Direct name of their device.
-        Method method = manager.getClass().getMethod("setDeviceName", Channel.class, String.class, ActionListener.class);
-        method.invoke(manager, channel, name, null);
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
-        Log.e(TAG, "Reflection found no such method as setDeviceName");
-      } catch (IllegalAccessException e) {
-        Log.e(TAG, "Illegal access exception: " + e);
-      } catch (IllegalArgumentException e) {
-        Log.e(TAG, "Illegal argument exception: " + e);
-      } catch (InvocationTargetException e) {
-        Log.e(TAG, "Invocation target exception: " + e);
-      }
-    }
-
     @ReactMethod
     public void init(String name) {
         if (manager != null) { // prevent reinitialization
@@ -127,8 +102,20 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
             channel = manager.initialize(activity, getMainLooper(), null);
 
-            // Set Device name
-            setWifiDirectUserFriendlyName(name);
+            Method setDeviceName = manager.getClass().getMethod(
+                "setDeviceName",
+                new Class[] { WifiP2pManager.Channel.class, String.class,
+                        WifiP2pManager.ActionListener.class });
+            setDeviceName.setAccessible(true);
+            setDeviceName.invoke(manager, channel, name , new WifiP2pManager.ActionListener() {
+                public void onSuccess() {
+                    //Code for Success in changing name
+                }
+
+                public void onFailure(int reason) {
+                    //Code to be done while name change Fails
+                }
+            });
 
             WiFiP2PBroadcastReceiver receiver = new WiFiP2PBroadcastReceiver(manager, channel, reactContext);
             activity.registerReceiver(receiver, intentFilter);
