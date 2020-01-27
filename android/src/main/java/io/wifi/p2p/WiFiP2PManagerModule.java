@@ -86,7 +86,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void init(String new_name) {
+    public void init(String devName) {
         if (manager != null) { // prevent reinitialization
             return;
         }
