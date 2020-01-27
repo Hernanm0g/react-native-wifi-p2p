@@ -11,7 +11,7 @@ const CONNECTION_INFO_UPDATED_ACTION = 'CONNECTION_INFO_UPDATED';
 const MODULE_NAME = 'WIFI_P2P';
 
 // TODO: Set Random numbers at the end of the string
-const DEFAULT_DEVICE_NAME = "Vidapp_"
+const DEFAULT_DEVICE_NAME = "Vidapp_Anonoymous_"+(Math.random()*(((10000-1)+1))+1);
 const initialize = () => WiFiP2PManager.init( devname = DEFAULT_DEVICE_NAME );
 
 const startDiscoveringPeers = () => new Promise((resolve, reject) => {
