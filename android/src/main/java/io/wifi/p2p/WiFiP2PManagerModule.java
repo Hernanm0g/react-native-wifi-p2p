@@ -128,7 +128,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             channel = manager.initialize(activity, getMainLooper(), null);
 
             // Set Device name
-            setWifiDirectUserFriendlyName(name)
+            setWifiDirectUserFriendlyName(name);
 
             WiFiP2PBroadcastReceiver receiver = new WiFiP2PBroadcastReceiver(manager, channel, reactContext);
             activity.registerReceiver(receiver, intentFilter);
