@@ -91,43 +91,48 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             return;
         }
 
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        try {
 
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
-            channel = manager.initialize(activity, getMainLooper(), null);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
-            Class[] paramTypes = new Class[3];
-            paramTypes[0] = WifiP2pManager.Channel.class;
-            paramTypes[1] = String.class;
-            paramTypes[2] = WifiP2pManager.ActionListener.class;
-            Method setDeviceName = manager.getClass().getMethod(
-                    "setDeviceName", paramTypes);
-            setDeviceName.setAccessible(true);
+          Activity activity = getCurrentActivity();
+          if (activity != null) {
+              manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
+              channel = manager.initialize(activity, getMainLooper(), null);
 
-            Object arglist[] = new Object[3];
-            arglist[0] = channel;
-            arglist[1] = devname;
-            arglist[2] = new WifiP2pManager.ActionListener() {
+              Class[] paramTypes = new Class[3];
+              paramTypes[0] = WifiP2pManager.Channel.class;
+              paramTypes[1] = String.class;
+              paramTypes[2] = WifiP2pManager.ActionListener.class;
+              Method setDeviceName = manager.getClass().getMethod(
+                      "setDeviceName", paramTypes);
+              setDeviceName.setAccessible(true);
 
-                @Override
-                public void onSuccess() {
-                    Log.d("setDeviceName succeeded", "true");
-                }
+              Object arglist[] = new Object[3];
+              arglist[0] = channel;
+              arglist[1] = devname;
+              arglist[2] = new WifiP2pManager.ActionListener() {
 
-                @Override
-                public void onFailure(int reason) {
-                    Log.d("setDeviceName failed", "true");
-                }
-            };
-            setDeviceName.invoke(manager, arglist);
+                  @Override
+                  public void onSuccess() {
+                      Log.d("setDeviceName succeeded", "true");
+                  }
 
-            WiFiP2PBroadcastReceiver receiver = new WiFiP2PBroadcastReceiver(manager, channel, reactContext);
-            activity.registerReceiver(receiver, intentFilter);
+                  @Override
+                  public void onFailure(int reason) {
+                      Log.d("setDeviceName failed", "true");
+                  }
+              };
+              setDeviceName.invoke(manager, arglist);
+
+              WiFiP2PBroadcastReceiver receiver = new WiFiP2PBroadcastReceiver(manager, channel, reactContext);
+              activity.registerReceiver(receiver, intentFilter);
+          }
+        } catch (e) {
+
         }
     }
 
