@@ -136,7 +136,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
