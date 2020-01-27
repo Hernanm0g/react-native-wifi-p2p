@@ -98,20 +98,31 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
             channel = manager.initialize(activity, getMainLooper(), null);
 
-            msetDeviceName = manager.getClass().getMethod(
-                "setDeviceName",
-                new Class[] { WifiP2pManager.Channel.class, String.class,
-                        WifiP2pManager.ActionListener.class });
-            msetDeviceName.setAccessible(true);
-            msetDeviceName.invoke(manager, channel, name , new WifiP2pManager.ActionListener() {
+            // Set Devie name
+            Class[] paramTypes = new Class[3];
+            paramTypes[0] = WifiP2pManager.Channel.class;
+            paramTypes[1] = String.class;
+            paramTypes[2] = WifiP2pManager.ActionListener.class;
+            Method setDeviceName = manager.getClass().getMethod(
+                    "setDeviceName", paramTypes);
+            setDeviceName.setAccessible(true);
+
+            Object arglist[] = new Object[3];
+            arglist[0] = channel;
+            arglist[1] = name;
+            arglist[2] = new WifiP2pManager.ActionListener() {
+
+                @Override
                 public void onSuccess() {
-                    //Code for Success in changing name
+                    Log.d("setDeviceName succeeded", "true");
                 }
 
+                @Override
                 public void onFailure(int reason) {
-                    //Code to be done while name change Fails
+                    Log.d("setDeviceName failed", "true");
                 }
-            });
+            };
+            setDeviceName.invoke(manager, arglist);
 
             WiFiP2PBroadcastReceiver receiver = new WiFiP2PBroadcastReceiver(manager, channel, reactContext);
             activity.registerReceiver(receiver, intentFilter);
