@@ -81,7 +81,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             }
         });
     }
-    
+
     @ReactMethod
     public void init(String name) {
         if (manager != null) { // prevent reinitialization
@@ -98,7 +98,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
             channel = manager.initialize(activity, getMainLooper(), null);
 
-            Method msetDeviceName = manager.getClass().getMethod(
+            msetDeviceName = manager.getClass().getMethod(
                 "setDeviceName",
                 new Class[] { WifiP2pManager.Channel.class, String.class,
                         WifiP2pManager.ActionListener.class });
