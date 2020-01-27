@@ -86,7 +86,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void init(String devName) {
+    public void init(String devname) {
         if (manager != null) { // prevent reinitialization
             return;
         }
@@ -111,7 +111,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
 
             Object arglist[] = new Object[3];
             arglist[0] = channel;
-            arglist[1] = devName;
+            arglist[1] = devname;
             arglist[2] = new WifiP2pManager.ActionListener() {
 
                 @Override
