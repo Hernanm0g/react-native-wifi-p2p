@@ -27,6 +27,7 @@ import static android.os.Looper.getMainLooper;
 
 /**
  * Created by zyusk on 01.05.2018.
+ * Forked and Updated by Hernnanm0g
  */
 public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements WifiP2pManager.ConnectionInfoListener {
     private WifiP2pInfo wifiP2pInfo;
@@ -76,7 +77,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                 }
                 else {
                     promise.resolve(null);
-                }   
+                }
             }
         });
     }
