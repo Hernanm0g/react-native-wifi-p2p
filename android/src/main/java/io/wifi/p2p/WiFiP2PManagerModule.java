@@ -10,7 +10,6 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
@@ -102,12 +101,15 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
             channel = manager.initialize(activity, getMainLooper(), null);
 
-            Method setDeviceName = manager.getClass().getMethod(
+            Method m = wpm.getClass().getMethod(
                 "setDeviceName",
-                new Class[] { WifiP2pManager.Channel.class, String.class,
-                        WifiP2pManager.ActionListener.class });
-            setDeviceName.setAccessible(true);
-            setDeviceName.invoke(manager, channel, name , new WifiP2pManager.ActionListener() {
+                new Class[] {
+                  WifiP2pManager.Channel.class,
+                  String.class,
+                  WifiP2pManager.ActionListener.class
+                });
+
+            m.invoke(WifiP2pManager manager,WifiP2pManager.Channel channel, name, new WifiP2pManager.ActionListener() {
                 public void onSuccess() {
                     //Code for Success in changing name
                 }
