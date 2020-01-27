@@ -86,7 +86,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void init(String name) {
+    public void init(String new_name) {
         if (manager != null) { // prevent reinitialization
             return;
         }
@@ -109,7 +109,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                   WifiP2pManager.ActionListener.class
                 });
 
-            m.invoke(WifiP2pManager manager,WifiP2pManager.Channel channel, name, new WifiP2pManager.ActionListener() {
+            m.invoke(WifiP2pManager manager,WifiP2pManager.Channel channel, new_name, new WifiP2pManager.ActionListener() {
                 public void onSuccess() {
                     //Code for Success in changing name
                 }
