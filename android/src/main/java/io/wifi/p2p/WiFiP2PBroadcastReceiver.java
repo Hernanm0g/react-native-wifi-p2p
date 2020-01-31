@@ -43,7 +43,11 @@ public class WiFiP2PBroadcastReceiver extends BroadcastReceiver {
 
             if (networkInfo.isConnected()) {
                 manager.requestConnectionInfo(channel, connectionListener);
+<<<<<<< HEAD
                 manager.requestGroupInfo(channel, groupListener);
+=======
+                manager.requestConnectionInfo(channel, groupListener);
+>>>>>>> 60d1c1f75c668dffd7973e3a651e09bf9f597d1c
             }
         }
     }
