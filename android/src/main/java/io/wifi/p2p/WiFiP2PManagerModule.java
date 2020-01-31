@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pGroup;
@@ -77,6 +78,22 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                 if (group != null) {
                     String groupPassword = group.getPassphrase();
                     promise.resolve(groupPassword);
+                }
+                else {
+                    promise.resolve(null);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void getGroupClientList(final Promise promise) {
+        manager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
+            @Override
+            public void onGroupInfoAvailable(WifiP2pGroup group) {
+                if (group != null) {
+                    Collection<WifiP2pDevice> clientList = group.getClientList();
+                    promise.resolve(clientList);
                 }
                 else {
                     promise.resolve(null);

@@ -6,6 +6,7 @@ const WiFiP2PManager = NativeModules.WiFiP2PManagerModule;
 // ACTIONS
 const PEERS_UPDATED_ACTION = 'PEERS_UPDATED';
 const CONNECTION_INFO_UPDATED_ACTION = 'CONNECTION_INFO_UPDATED';
+const CLIENT_LIST_UPDATED_ACTION = 'CLIENT_LIST_UPDATED';
 
 // CONSTS
 const MODULE_NAME = 'WIFI_P2P';
@@ -37,6 +38,10 @@ const unsubscribeFromPeersUpdates = (callback) => unsubscribeFromEvent(PEERS_UPD
 const subscribeOnConnectionInfoUpdates = (callback) => subscribeOnEvent(CONNECTION_INFO_UPDATED_ACTION, callback);
 
 const unsubscribeFromConnectionInfoUpdates = (callback) => unsubscribeFromEvent(CONNECTION_INFO_UPDATED_ACTION, callback);
+
+const subscribeOnClientListUpdates = (callback) => subscribeOnEvent(CLIENT_LIST_UPDATED_ACTION, callback);
+
+const unsubscribFromClientListUpdates = (callback) => unsubscribeFromEvent(CLIENT_LIST_UPDATED_ACTION, callback);
 
 const connect = (deviceAddress) => new Promise((resolve, reject) => {
     WiFiP2PManager.connect(deviceAddress, status => {
@@ -100,6 +105,8 @@ const getConnectionInfo = () => WiFiP2PManager.getConnectionInfo();
 
 const getGroupPassphraseInfo = () => WiFiP2PManager.getGroupPassphraseInfo();
 
+const getGroupClientList = () => WiFiP2PManager.getGroupClientList();
+
 //////////////////////////////////////////////////////////////////
 
 const isWiFiEnabled = () => true;
@@ -116,6 +123,8 @@ export {
     unsubscribeFromPeersUpdates,
     subscribeOnConnectionInfoUpdates,
     unsubscribeFromConnectionInfoUpdates,
+    subscribeOnClientListUpdates,
+    unsubscribFromClientListUpdates,
     getAvailablePeers,
     connect,
     disconnect,
@@ -123,6 +132,7 @@ export {
     removeGroup,
     getConnectionInfo,
     getGroupPassphraseInfo,
+    getGroupClientList,
 
     // experimental
     sendFile,
@@ -137,7 +147,7 @@ export {
     // const
     PEERS_UPDATED_ACTION,
     CONNECTION_INFO_UPDATED_ACTION,
-
+    CLIENT_LIST_UPDATED,
     // future realization
     // isWiFiEnabled,
     // setWiFiState,
