@@ -67,7 +67,7 @@ public class WiFiP2PBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager.GroupInfoListener groupListener = new WifiP2pManager.GroupInfoListener() {
         @Override
         public void onGroupInfoAvailable(final WifiP2pGroup group) {
-            Log.d(group.getClientList())
+            Log.d(group.getClientList());
 
         }
     };
