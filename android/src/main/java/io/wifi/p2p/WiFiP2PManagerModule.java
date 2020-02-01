@@ -93,7 +93,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             public void onGroupInfoAvailable(WifiP2pGroup group) {
                 if (group != null) {
                   WritableMap clientList = mapper.mapDevicesInfoToReactEntity(group.getClientList());
-                  promise.resolve(clientList);
+                  promise.resolve(clientList); 
                 }
                 else {
                     promise.resolve(null);
