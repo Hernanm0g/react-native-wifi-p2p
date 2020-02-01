@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pGroup;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -38,9 +39,10 @@ public class WiFiP2PBroadcastReceiver extends BroadcastReceiver {
             manager.requestPeers(channel, peerListListener);
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
+            WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
             if (networkInfo.isConnected()) {
                 manager.requestConnectionInfo(channel, connectionListener);
+                manager.requestGroupInfo(channel, groupListener);
             }
         }
     }
@@ -58,6 +60,14 @@ public class WiFiP2PBroadcastReceiver extends BroadcastReceiver {
         public void onConnectionInfoAvailable(final WifiP2pInfo info) {
             WritableMap params = mapper.mapWiFiP2PInfoToReactEntity(info);
             sendEvent("WIFI_P2P:CONNECTION_INFO_UPDATED", params);
+        }
+    };
+
+    private WifiP2pManager.GroupInfoListener groupListener = new WifiP2pManager.GroupInfoListener() {
+        @Override
+        public void onGroupInfoAvailable(final WifiP2pGroup group) {
+            WritableMap params = mapper.mapWiFiP2PInfoToReactEntity(group.getClientList());
+            sendEvent("WIFI_P2P:GROUP_INFO_UPDATED", params);
         }
     };
 
