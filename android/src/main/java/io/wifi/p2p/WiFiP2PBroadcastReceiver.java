@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import android.util.Log;
 
 /**
  * Created by zyusk on 15.07.2018.
@@ -66,8 +67,8 @@ public class WiFiP2PBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager.GroupInfoListener groupListener = new WifiP2pManager.GroupInfoListener() {
         @Override
         public void onGroupInfoAvailable(final WifiP2pGroup group) {
-            WritableMap params = group.getClientList()
-            sendEvent("WIFI_P2P:GROUP_INFO_UPDATED", params);
+            Log.d(group.getClientList())
+
         }
     };
 
