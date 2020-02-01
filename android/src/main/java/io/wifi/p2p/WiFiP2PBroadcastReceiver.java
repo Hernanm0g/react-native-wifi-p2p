@@ -66,7 +66,7 @@ public class WiFiP2PBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager.GroupInfoListener groupListener = new WifiP2pManager.GroupInfoListener() {
         @Override
         public void onGroupInfoAvailable(final WifiP2pGroup group) {
-            WritableMap params = mapper.mapWiFiP2PInfoToReactEntity(group.getClientList());
+            WritableMap params = mapper.mapDeviceListToReactEntityArray(group.getClientList());
             sendEvent("WIFI_P2P:GROUP_INFO_UPDATED", params);
         }
     };
