@@ -85,7 +85,7 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             }
         });
     }
-
+ 
     @ReactMethod
     public void getGroupClientList(final Promise promise) {
         manager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
