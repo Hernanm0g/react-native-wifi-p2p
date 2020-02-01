@@ -39,7 +39,7 @@ const subscribeOnConnectionInfoUpdates = (callback) => subscribeOnEvent(CONNECTI
 
 const unsubscribeFromConnectionInfoUpdates = (callback) => unsubscribeFromEvent(CONNECTION_INFO_UPDATED_ACTION, callback);
 
-const subscribeOnGrupInfoUpdates = (callback) => subscribeOnEvent(GROUP_INFO_UPDATED_ACTION, callback);
+const subscribeOnGroupInfoUpdates = (callback) => subscribeOnEvent(GROUP_INFO_UPDATED_ACTION, callback);
 
 const unsubscribeFromGroupInfoUpdates = (callback) => unsubscribeFromEvent(GROUP_INFO_UPDATED_ACTION, callback);
 
@@ -105,6 +105,8 @@ const getConnectionInfo = () => WiFiP2PManager.getConnectionInfo();
 
 const getGroupPassphraseInfo = () => WiFiP2PManager.getGroupPassphraseInfo();
 
+const getGroupClients = () => WiFiP2PManager.getGroupClients();
+
 //////////////////////////////////////////////////////////////////
 
 const isWiFiEnabled = () => true;
@@ -130,6 +132,7 @@ export {
     removeGroup,
     getConnectionInfo,
     getGroupPassphraseInfo,
+    getGroupClients,
 
     // experimental
     sendFile,

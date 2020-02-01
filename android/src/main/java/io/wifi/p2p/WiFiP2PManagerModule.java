@@ -11,6 +11,7 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
 
@@ -21,9 +22,13 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableArray;
 
 import java.lang.reflect.Method;
 import java.io.File;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static android.os.Looper.getMainLooper;
 
@@ -77,6 +82,28 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                 if (group != null) {
                     String groupPassword = group.getPassphrase();
                     promise.resolve(groupPassword);
+                }
+                else {
+                    promise.resolve(null);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void getGroupClients(final Promise promise) {
+        manager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
+            @Override
+            public void onGroupInfoAvailable(WifiP2pGroup group) {
+                if (group != null) {
+                  Collection<WifiP2pDevice> collection = group.getClientList();
+                  Iterator<WifiP2pDevice> iterator = collection.iterator();
+                  WritableArray array = Arguments.createArray();
+                  while (iterator.hasNext()) {
+                    WritableMap parm = mapper.mapDeviceInfoToReactEntity(iterator.next());
+                    array.pushMap(parm);
+                  }
+                  promise.resolve(array);
                 }
                 else {
                     promise.resolve(null);
