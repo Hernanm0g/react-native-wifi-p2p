@@ -92,7 +92,11 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onGroupInfoAvailable(WifiP2pGroup group) {
                 if (group != null) {
+<<<<<<< HEAD
                   WritableMap clientList = mapper.mapDevicesInfoToReactEntity(group.getClientList());
+=======
+                  WritableMap clientList = mapper.mapDevicesInfoToReactEntity(group.getClientList(););
+>>>>>>> 1e633632c215c3ec93358114002296be5abdaba9
                   promise.resolve(clientList);
                 }
                 else {
