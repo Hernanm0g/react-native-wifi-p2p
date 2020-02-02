@@ -113,18 +113,11 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void init(String devname) {
+    public void setDeviceName(String devname) {
         if (manager != null) { // prevent reinitialization
             return;
         }
-
         try {
-
-          intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-          intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-          intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-          intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-
           Activity activity = getCurrentActivity();
           if (activity != null) {
               manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -154,6 +147,29 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                   }
               };
               setDeviceName.invoke(manager, arglist);
+          }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @ReactMethod
+    public void init() {
+        if (manager != null) { // prevent reinitialization
+            return;
+        }
+
+        try {
+
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+          intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+          Activity activity = getCurrentActivity();
+          if (activity != null) {
+              manager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
+              channel = manager.initialize(activity, getMainLooper(), null);
 
               WiFiP2PBroadcastReceiver receiver = new WiFiP2PBroadcastReceiver(manager, channel, reactContext);
               activity.registerReceiver(receiver, intentFilter);
