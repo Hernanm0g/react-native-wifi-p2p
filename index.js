@@ -80,25 +80,30 @@ const stopDiscoveringPeers = () => new Promise((resolve, reject) => {
     })
 });
 
-const sendFile = (pathToFile) => new Promise((resolve, reject) => {
-    WiFiP2PManager.sendFile(pathToFile, (reasonCode) => {
+const sendFile = (pathToFile, receiverIp = null) => new Promise((resolve, reject) => {
+  console.log("Send to:",receiverIp);
+  console.log("file Path:", pathToFile);
+    WiFiP2PManager.sendFile(pathToFile, receiverIp, (reasonCode) => {
         reasonCode === undefined ? resolve() : reject(getError(reasonCode));
     });
 });
 
 const receiveFile = () => new Promise((resolve, reject) => {
+  console.log("receiveFile");
     WiFiP2PManager.receiveFile((pathToFile) => {
         resolve(pathToFile);
     });
 });
 
-const sendMessage = (message) => new Promise((resolve, reject) => {
-    WiFiP2PManager.sendMessage(message, (reasonCode) => {
-        reasonCode === undefined ? resolve() : reject(getError(reasonCode));
+const sendMessage = (message, ip) => new Promise((resolve, reject) => {
+  console.log("sendMessage", message);
+    WiFiP2PManager.sendMessage(message, ip, (reasonCode) => {
+        reasonCode === "soon will be" ? resolve(true) : reject(getError(reasonCode));
     });
 });
 
 const receiveMessage = () => new Promise((resolve, reject) => {
+  console.log("receiveMessage");
     WiFiP2PManager.receiveMessage((message) => {
         resolve(message);
     });

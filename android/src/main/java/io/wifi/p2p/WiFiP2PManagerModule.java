@@ -290,21 +290,40 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void sendFile(String filePath, Callback callback) {
-        // User has picked an image. Transfer it to group owner i.e peer using
+    public void sendFile(final String filePath, final String receiverIp, final Callback callback) {
         // FileTransferService.
-        Uri uri = Uri.fromFile(new File(filePath));
-        System.out.println("Sending: " + uri);
-        System.out.println("Intent----------- " + uri);
-        Intent serviceIntent = new Intent(getCurrentActivity(), FileTransferService.class);
-        serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
-        serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
-        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-                wifiP2pInfo.groupOwnerAddress.getHostAddress());
-        serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
-        getCurrentActivity().startService(serviceIntent);
+        // Toast toast =
+        //     Toast.makeText(reactContext,
+        //             filePath+receiverIp, Toast.LENGTH_LONG);
+        //
+        // toast.show();
+        manager.requestConnectionInfo(channel, new WifiP2pManager.ConnectionInfoListener() {
+            @Override
+            public void onConnectionInfoAvailable(WifiP2pInfo info) {
+                if (info.groupFormed && info.isGroupOwner) {
+                  // Send file to clients
+                } else if (info.groupFormed) {
 
-        callback.invoke("soon will be");
+                }
+                Uri uri = Uri.fromFile(new File(filePath));
+                String finalReceiver = "";
+                if (receiverIp == null) {
+                  finalReceiver = info.groupOwnerAddress.getHostAddress();
+                } else {
+                  finalReceiver = receiverIp;
+                }
+                System.out.println("Sending: " + uri);
+                System.out.println("Intent----------- " + uri);
+                Intent serviceIntent = new Intent(getCurrentActivity(), FileTransferService.class);
+                serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
+                serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
+                serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+                        finalReceiver);
+                serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+                getCurrentActivity().startService(serviceIntent);
+                callback.invoke("soon will be");
+            }
+        });
     }
 
     @ReactMethod
@@ -316,28 +335,33 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                     new FileServerAsyncTask(getCurrentActivity(), callback)
                             .execute();
                 } else if (info.groupFormed) {
-                    // The other device acts as the client. In this case, we enable the
-                    // get file button.
+                  // Toast toast =
+                  //     Toast.makeText(reactContext,
+                  //             "Ready for receving", Toast.LENGTH_LONG);
+                  //
+                  // toast.show();
+                  new FileServerAsyncTask(getCurrentActivity(), callback)
+                          .execute();
                 }
-                // hide the connect button
             }
         });
     }
 
     @ReactMethod
-    public void sendMessage(final String message, final Callback callback) {
+    public void sendMessage(final String message, final String ip, final Callback callback) {
       manager.requestConnectionInfo(channel, new WifiP2pManager.ConnectionInfoListener() {
           @Override
           public void onConnectionInfoAvailable(WifiP2pInfo info) {
-              if (info.groupFormed && info.isGroupOwner) {
-
-              } else if (info.groupFormed) {
-              }
               System.out.println("Sending message: " + message);
               Intent serviceIntent = new Intent(getCurrentActivity(), MessageTransferService.class);
               serviceIntent.setAction(MessageTransferService.ACTION_SEND_MESSAGE);
               serviceIntent.putExtra(MessageTransferService.EXTRAS_DATA, message);
-              serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
+              if (ip==null) {
+                serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
+              } else {
+                serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_ADDRESS, ip);
+              }
+
               serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
               getCurrentActivity().startService(serviceIntent);
 
@@ -355,8 +379,8 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
                     new MessageServerAsyncTask(callback)
                             .execute();
                 } else if (info.groupFormed) {
-                    // The other device acts as the client. In this case, we enable the
-                    // get file button.
+                  new MessageServerAsyncTask(callback)
+                          .execute();
                 }
                 // hide the connect button
             }

@@ -49,12 +49,12 @@ public class MessageServerAsyncTask extends AsyncTask<Void, Void, String> {
             System.out.println("Server: Socket opened");
             Socket client = serverSocket.accept();
             System.out.println("Server: connection done");
-            String clientIp = client.getInetAddress().getHostAddress();
+            String senderIp = client.getInetAddress().getHostAddress();
             InputStream inputstream = client.getInputStream();
             String message = convertStreamToString(inputstream);
             WritableMap result = Arguments.createMap();
             result.putString("message", message);
-            result.putString("clientIp", clientIp);
+            result.putString("senderIp", senderIp);
             callback.invoke(result);
             serverSocket.close();
             return message;
