@@ -114,9 +114,6 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
 
     @ReactMethod
     public void setDeviceName(String devname) {
-        if (manager != null) { // prevent reinitialization
-            return;
-        }
         try {
           Activity activity = getCurrentActivity();
           if (activity != null) {
