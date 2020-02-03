@@ -14,6 +14,7 @@ import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -324,16 +325,25 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void sendMessage(String message, Callback callback) {
-        System.out.println("Sending message: " + message);
-        Intent serviceIntent = new Intent(getCurrentActivity(), MessageTransferService.class);
-        serviceIntent.setAction(MessageTransferService.ACTION_SEND_MESSAGE);
-        serviceIntent.putExtra(MessageTransferService.EXTRAS_DATA, message);
-        serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_ADDRESS, wifiP2pInfo.groupOwnerAddress.getHostAddress());
-        serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
-        getCurrentActivity().startService(serviceIntent);
+    public void sendMessage(final String message, final Callback callback) {
+      manager.requestConnectionInfo(channel, new WifiP2pManager.ConnectionInfoListener() {
+          @Override
+          public void onConnectionInfoAvailable(WifiP2pInfo info) {
+              if (info.groupFormed && info.isGroupOwner) {
 
-        callback.invoke("soon will be");
+              } else if (info.groupFormed) {
+              }
+              System.out.println("Sending message: " + message);
+              Intent serviceIntent = new Intent(getCurrentActivity(), MessageTransferService.class);
+              serviceIntent.setAction(MessageTransferService.ACTION_SEND_MESSAGE);
+              serviceIntent.putExtra(MessageTransferService.EXTRAS_DATA, message);
+              serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
+              serviceIntent.putExtra(MessageTransferService.EXTRAS_GROUP_OWNER_PORT, 8988);
+              getCurrentActivity().startService(serviceIntent);
+
+              callback.invoke("soon will be");
+          }
+      });
     }
 
     @ReactMethod

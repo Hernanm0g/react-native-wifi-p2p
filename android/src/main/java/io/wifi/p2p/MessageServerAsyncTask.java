@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.WritableMap;
 
 import static io.wifi.p2p.Utils.CHARSET;
 
@@ -47,13 +49,15 @@ public class MessageServerAsyncTask extends AsyncTask<Void, Void, String> {
             System.out.println("Server: Socket opened");
             Socket client = serverSocket.accept();
             System.out.println("Server: connection done");
-
+            String clientIp = client.getInetAddress().getHostAddress();
             InputStream inputstream = client.getInputStream();
-            String result = convertStreamToString(inputstream);
-            serverSocket.close();
+            String message = convertStreamToString(inputstream);
+            WritableMap result = Arguments.createMap();
+            result.putString("message", message);
+            result.putString("clientIp", clientIp);
             callback.invoke(result);
-
-            return result;
+            serverSocket.close();
+            return message;
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return null;
