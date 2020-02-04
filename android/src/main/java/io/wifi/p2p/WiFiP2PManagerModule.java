@@ -352,6 +352,10 @@ public class WiFiP2PManagerModule extends ReactContextBaseJavaModule implements 
       manager.requestConnectionInfo(channel, new WifiP2pManager.ConnectionInfoListener() {
           @Override
           public void onConnectionInfoAvailable(WifiP2pInfo info) {
+              if (info.groupOwnerAddress==null){
+                  callback.invoke("Group owner not accessible yet.");
+                  return;
+              }
               System.out.println("Sending message: " + message);
               Intent serviceIntent = new Intent(getCurrentActivity(), MessageTransferService.class);
               serviceIntent.setAction(MessageTransferService.ACTION_SEND_MESSAGE);
